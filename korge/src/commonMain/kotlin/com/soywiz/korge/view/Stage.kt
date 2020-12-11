@@ -36,6 +36,8 @@ class Stage(override val views: Views) : Container()
     /** Mouse Y coordinate relative to the [Stage] singleton */
     val mouseY get() = localMouseY(views)
 
+    var renderCompleteCallback : (() -> Int)? = null
+
     override fun getLocalBoundsInternal(out: Rectangle) {
         out.setTo(0.0, 0.0, views.virtualWidth, views.virtualHeight)
     }

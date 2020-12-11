@@ -75,7 +75,7 @@ open class BaseImage(
 
 }
 
-class Image(
+open class Image(
 	bitmap: Resourceable<out BmpSlice>,
 	anchorX: Double = 0.0,
 	anchorY: Double = anchorX,

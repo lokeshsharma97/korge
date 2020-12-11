@@ -181,11 +181,14 @@ class Views constructor(
 
 	private val resizedEvent = ReshapeEvent(0, 0)
 
+    val auxStage = Stage(this)
     /** Reference to the root node [Stage] */
 	val stage = Stage(this)
 
     /** Reference to the root node [Stage] (alias) */
 	val root = stage
+
+    var auxRenderBuffer = ag.renderBuffers.alloc()
 
     var supportTogglingDebug = true
 	var debugViews = false
@@ -280,6 +283,8 @@ class Views constructor(
 		if (clearEachFrame) ag.clear(clearColor, stencil = 0, clearColor = true, clearStencil = true)
         onBeforeRender(renderContext)
 		stage.render(renderContext)
+        renderAuxStage()
+
         renderContext.flush()
         stage.renderDebug(renderContext)
 
@@ -291,6 +296,17 @@ class Views constructor(
 
         onAfterRender(renderContext)
         renderContext.flush()
+    }
+
+    fun renderAuxStage() {
+        ag.renderToExternalRB(
+            512 ,
+            512 ,
+            render = {
+                auxStage.render(renderContext)
+                auxStage.renderCompleteCallback?.invoke()
+            } ,
+            rb = this.auxRenderBuffer)
     }
 
 	fun frameUpdateAndRender(fixedSizeStep: TimeSpan = TimeSpan.NIL) {
