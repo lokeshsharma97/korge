@@ -283,7 +283,9 @@ class Views constructor(
 		if (clearEachFrame) ag.clear(clearColor, stencil = 0, clearColor = true, clearStencil = true)
         onBeforeRender(renderContext)
 		stage.render(renderContext)
-        renderAuxStage()
+        if (auxStage.enableAuxStage) {
+            renderAuxStage()
+        }
 
         renderContext.flush()
         stage.renderDebug(renderContext)
@@ -305,6 +307,7 @@ class Views constructor(
             render = {
                 auxStage.render(renderContext)
                 auxStage.renderCompleteCallback?.invoke()
+                auxStage.enableAuxStage = false
             } ,
             rb = this.auxRenderBuffer)
     }
