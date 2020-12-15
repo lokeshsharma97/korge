@@ -181,14 +181,15 @@ class Views constructor(
 
 	private val resizedEvent = ReshapeEvent(0, 0)
 
-    val auxStage = Stage(this)
+    var previewPipeline: Pipeline = Pipeline(views , nativeWidth , nativeHeight , ag.mainRenderBuffer)
+    var exportPipeline: Pipeline = Pipeline(views , 512 , 512 , ag.renderBuffers.alloc())
     /** Reference to the root node [Stage] */
-	val stage = Stage(this)
+	val stage = previewPipeline.stage
+    /**Pipelines**/
+    var renderPipelines: MutableList<Pipeline> = mutableListOf(previewPipeline , exportPipeline)
 
     /** Reference to the root node [Stage] (alias) */
 	val root = stage
-
-    var auxRenderBuffer = ag.renderBuffers.alloc()
 
     var supportTogglingDebug = true
 	var debugViews = false
@@ -282,9 +283,8 @@ class Views constructor(
 	fun render() {
 		if (clearEachFrame) ag.clear(clearColor, stencil = 0, clearColor = true, clearStencil = true)
         onBeforeRender(renderContext)
-		stage.render(renderContext)
-        if (auxStage.enableAuxStage) {
-            renderAuxStage()
+		for (pipeline in renderPipelines) {
+            pipeline.render(renderContext)
         }
 
         renderContext.flush()
@@ -298,18 +298,6 @@ class Views constructor(
 
         onAfterRender(renderContext)
         renderContext.flush()
-    }
-
-    fun renderAuxStage() {
-        ag.renderToExternalRB(
-            512 ,
-            512 ,
-            render = {
-                auxStage.render(renderContext)
-                auxStage.renderCompleteCallback?.invoke()
-                auxStage.enableAuxStage = false
-            } ,
-            rb = this.auxRenderBuffer)
     }
 
 	fun frameUpdateAndRender(fixedSizeStep: TimeSpan = TimeSpan.NIL) {
