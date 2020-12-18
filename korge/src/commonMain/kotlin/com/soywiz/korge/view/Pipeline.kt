@@ -1,23 +1,25 @@
 package com.soywiz.korge.view
 
-import com.soywiz.kds.BitSet
 import com.soywiz.korag.AG
 import com.soywiz.korge.render.RenderContext
+import com.soywiz.korma.geom.Size
 
-class Pipeline(val views: Views , width : Int , height : Int , rb : AG.BaseRenderBuffer? = null) {
-    var stage : Stage = Stage(views)
-    var width = width
-    var height = height
-    var renderBuffer : AG.BaseRenderBuffer
+class Pipeline(val views: Views , width : Int , height : Int , isActive : Boolean = true, rb : AG.BaseRenderBuffer? = null , st : Stage ? = null) {
+    private var stage : Stage
+    private var width = width
+    private var height = height
+    var renderBuffer : AG.BaseRenderBuffer ?
     var renderCompleteCallback : (() -> Int)? = null
-    var isActive : Boolean = false
+    var isActive : Boolean = isActive
     val ag = views.ag
 
     init {
-        if (rb != null) {
-            renderBuffer = rb
+        renderBuffer = rb
+
+        if (st != null) {
+            this.stage = st
         } else {
-            renderBuffer = views.ag.renderBuffers.alloc()
+            this.stage = Stage(views)
         }
     }
 
@@ -26,7 +28,12 @@ class Pipeline(val views: Views , width : Int , height : Int , rb : AG.BaseRende
             return
         }
 
-        ag.renderToExternalRB(
+        if (renderBuffer == null) {
+            stage.render(renderContext)
+            return
+        }
+
+        renderContext.renderToCustomBuffer(
             width ,
             height ,
             render = {
@@ -34,7 +41,19 @@ class Pipeline(val views: Views , width : Int , height : Int , rb : AG.BaseRende
                 renderCompleteCallback?.invoke()
                 isActive = false
             } ,
-            rb = this.renderBuffer)
+            rb = this.renderBuffer!!)
+    }
+
+    fun SetActive(isActive: Boolean) {
+        this.isActive = isActive
+    }
+
+    fun SetWidth(width: Int) {
+        this.width = width
+    }
+
+    fun SetHeight(height: Int) {
+        this.height = height
     }
 
     fun update() {

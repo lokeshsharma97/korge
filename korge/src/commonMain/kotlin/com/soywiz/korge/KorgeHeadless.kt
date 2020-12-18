@@ -36,6 +36,7 @@ object KorgeHeadless {
         bgcolor: RGBA? = Colors.BLACK,
         debug: Boolean = false,
         fullscreen: Boolean? = null,
+        useDefaultFrameBuffer : Boolean = true,
         args: Array<String> = arrayOf(),
         timeProvider: TimeProvider = TimeProvider,
         injector: AsyncInjector = AsyncInjector(),
@@ -44,7 +45,7 @@ object KorgeHeadless {
         entry: suspend Stage.() -> Unit
     ) = Korge(
         title, width, height, virtualWidth, virtualHeight, icon, iconPath, iconDrawable, imageFormats, quality,
-        targetFps, scaleAnchor, scaleMode, clipBorders, bgcolor, debug, fullscreen, args, HeadlessGameWindow(), timeProvider, injector,
+        targetFps, scaleAnchor, scaleMode, clipBorders, bgcolor, debug, fullscreen, useDefaultFrameBuffer,args, HeadlessGameWindow(), timeProvider, injector,
         blocking=blocking,debugAg = debugAg, entry = entry
     )
 }

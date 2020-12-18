@@ -97,7 +97,7 @@ class RenderContext constructor(
 		})
 	}
 
-    inline fun renderToCustomBuffer(width: Int, height: Int, render: () -> Unit, rb : AG.RenderBuffer) {
+    inline fun renderToCustomBuffer(width: Int, height: Int, render: () -> Unit, rb : AG.BaseRenderBuffer) {
         flush()
         ag.renderToExternalRB(width, height,rb ,render = {
             val oldScissors = batch.scissor

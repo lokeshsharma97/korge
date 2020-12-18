@@ -50,7 +50,8 @@ class Views constructor(
     val stats: Stats,
     val gameWindow: GameWindow,
     val gameId: String = "korgegame",
-    val settingsFolder: String? = null
+    val settingsFolder: String? = null ,
+    useDefaultFrameBuffer : Boolean = true
 ) :
     Extra by Extra.Mixin(),
     EventDispatcher by EventDispatcher.Mixin(),
@@ -181,12 +182,17 @@ class Views constructor(
 
 	private val resizedEvent = ReshapeEvent(0, 0)
 
-    var previewPipeline: Pipeline = Pipeline(views , nativeWidth , nativeHeight , ag.mainRenderBuffer)
-    var exportPipeline: Pipeline = Pipeline(views , 512 , 512 , ag.renderBuffers.alloc())
+
     /** Reference to the root node [Stage] */
-	val stage = previewPipeline.stage
+	val stage = Stage(views)
     /**Pipelines**/
-    var renderPipelines: MutableList<Pipeline> = mutableListOf(previewPipeline , exportPipeline)
+    var previewPipeline: Pipeline = Pipeline(views ,
+        virtualWidth ,
+        virtualHeight ,
+        true ,
+        if (useDefaultFrameBuffer) null else ag.renderBuffers.alloc() ,
+        stage)
+    var renderPipelines: MutableList<Pipeline> = mutableListOf(previewPipeline)
 
     /** Reference to the root node [Stage] (alias) */
 	val root = stage
@@ -284,6 +290,7 @@ class Views constructor(
 		if (clearEachFrame) ag.clear(clearColor, stencil = 0, clearColor = true, clearStencil = true)
         onBeforeRender(renderContext)
 		for (pipeline in renderPipelines) {
+            previewPipeline.isActive = true
             pipeline.render(renderContext)
         }
 

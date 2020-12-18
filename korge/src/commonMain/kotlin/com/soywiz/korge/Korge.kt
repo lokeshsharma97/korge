@@ -62,6 +62,7 @@ object Korge {
             clipBorders = module.clipBorders,
             debug = config.debug,
             fullscreen = module.fullscreen,
+            useDefaultFrameBuffer = config.useDefaultFrameBuffer,
             args = config.args,
             gameWindow = config.gameWindow,
             injector = config.injector,
@@ -103,6 +104,7 @@ object Korge {
 		bgcolor: RGBA? = Colors.BLACK,
 		debug: Boolean = false,
 		fullscreen: Boolean? = null,
+        useDefaultFrameBuffer : Boolean = true,
 		args: Array<String> = arrayOf(),
 		gameWindow: GameWindow? = null,
         timeProvider: TimeProvider = TimeProvider,
@@ -152,7 +154,8 @@ object Korge {
                 stats = stats,
                 gameWindow = gameWindow,
                 gameId = gameId,
-                settingsFolder = settingsFolder
+                settingsFolder = settingsFolder,
+                useDefaultFrameBuffer = useDefaultFrameBuffer
             )
 
             if (OS.isJsBrowser) KDynamic { global["views"] = views }
@@ -471,6 +474,7 @@ object Korge {
 		val trace: Boolean = false,
 		val context: Any? = null,
 		val fullscreen: Boolean? = null,
+        val useDefaultFrameBuffer: Boolean = true,
         val blocking: Boolean = true,
         val gameId: String = DEFAULT_GAME_ID,
         val settingsFolder: String? = null,
