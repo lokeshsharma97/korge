@@ -155,7 +155,9 @@ object Korge {
                 gameWindow = gameWindow,
                 gameId = gameId,
                 settingsFolder = settingsFolder,
-                useDefaultFrameBuffer = useDefaultFrameBuffer
+                useDefaultFrameBuffer = useDefaultFrameBuffer,
+                bufferWidth = virtualWidth ,
+                bufferHeight = virtualHeight
             )
 
             if (OS.isJsBrowser) KDynamic { global["views"] = views }

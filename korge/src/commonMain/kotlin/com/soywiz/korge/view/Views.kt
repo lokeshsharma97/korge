@@ -51,7 +51,10 @@ class Views constructor(
     val gameWindow: GameWindow,
     val gameId: String = "korgegame",
     val settingsFolder: String? = null ,
+    bufferWidth : Int ,
+    bufferHeight : Int ,
     useDefaultFrameBuffer : Boolean = true
+
 ) :
     Extra by Extra.Mixin(),
     EventDispatcher by EventDispatcher.Mixin(),
@@ -187,8 +190,8 @@ class Views constructor(
 	val stage = Stage(views)
     /**Pipelines**/
     var previewPipeline: Pipeline = Pipeline(views ,
-        virtualWidth ,
-        virtualHeight ,
+        bufferWidth ,
+        bufferHeight ,
         true ,
         if (useDefaultFrameBuffer) null else ag.renderBuffers.alloc() ,
         stage)
@@ -469,7 +472,7 @@ class ViewsLog(
 	val stats: Stats = Stats(),
 	val gameWindow: GameWindow = GameWindowLog()
 ) : CoroutineScope {
-	val views = Views(coroutineContext + AsyncInjectorContext(injector), ag, injector, input, timeProvider, stats, gameWindow)
+	val views = Views(coroutineContext + AsyncInjectorContext(injector), ag, injector, input, timeProvider, stats, gameWindow , bufferWidth = DefaultViewport.WIDTH , bufferHeight = DefaultViewport.HEIGHT)
 }
 
 fun Views.texture(bmp: Bitmap, mipmaps: Boolean = false): Texture = Texture(Texture.Base(ag.createTexture(bmp, mipmaps), bmp.width, bmp.height))
