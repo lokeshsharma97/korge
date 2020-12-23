@@ -117,7 +117,7 @@ class RenderContext constructor(
      * Finishes the drawing and flips the screen. Called by the KorGe engine at the end of the frame.
      */
 	fun finish() {
-		ag.flip()
+        ag.flip()
 	}
 
     /**
