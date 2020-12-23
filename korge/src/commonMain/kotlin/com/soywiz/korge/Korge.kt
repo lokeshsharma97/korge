@@ -76,11 +76,12 @@ object Korge {
                 injector
                     .mapInstance(Module::class, module)
                     .mapInstance(Config::class, config)
-                config.constructedViews(views)
                 module.apply { injector.configure() }
+                config.constructedViews(views)
                 val sc = SceneContainer(views, name = "rootSceneContainer")
                 views.stage += sc
                 sc.changeTo(config.sceneClass, *config.sceneInjects.toTypedArray(), time = 0.milliseconds)
+                config.constructedScene(views)
                 // Se we have the opportunity to execute deinitialization code at the scene level
                 views.onClose { sc.changeTo<EmptyScene>() }
             }
@@ -177,10 +178,11 @@ object Korge {
             prepareViews(views, gameWindow, bgcolor != null, bgcolor ?: Colors.TRANSPARENT_BLACK, waitForFirstRender = true)
 
             completeViews(views)
+            println("completed........")
             views.launchImmediately {
                 coroutineScope {
-                    //println("coroutineContext: $coroutineContext")
-                    //println("GameWindow: ${coroutineContext[GameWindow]}")
+                    println("coroutineContext: $coroutineContext")
+                    println("GameWindow: ${coroutineContext[GameWindow]}")
                     entry(views.stage)
                     if (blocking) {
                         // @TODO: Do not complete to prevent job cancelation?
@@ -474,7 +476,8 @@ object Korge {
         val blocking: Boolean = true,
         val gameId: String = DEFAULT_GAME_ID,
         val settingsFolder: String? = null,
-		val constructedViews: (Views) -> Unit = {}
+		val constructedViews: (Views) -> Unit = {},
+        val constructedScene: (Views) -> Unit = {}
 	)
 
 	data class ModuleArgs(val args: Array<String>)
