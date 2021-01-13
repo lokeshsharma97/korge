@@ -37,7 +37,6 @@ class MaskedView : Container() {
             if (useMask) {
                 ctx.flush()
                 ctx.stencilIndex--
-
                 if (ctx.stencilIndex <= 0) {
                     setMaskState(ctx, MaskStates.STATE_NONE)
                     //println("ctx.stencilIndex: ${ctx.stencilIndex}")

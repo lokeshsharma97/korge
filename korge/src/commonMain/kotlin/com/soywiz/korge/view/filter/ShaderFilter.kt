@@ -29,7 +29,10 @@ abstract class ShaderFilter : Filter {
         fun Program.Builder.tex(coords: Operand) = texture2D(DefaultShaders.u_Tex, coords / u_TextureSize)
 
         protected fun createProgram(vertex: VertexShader, fragment: FragmentShader, premultiplied: Boolean): Program {
-            return Program(vertex, fragment.appending {
+
+            return Program(vertex, if (!fragment.glslString.isEmpty()) {
+                fragment
+            } else fragment.appending {
                 // Premultiplied
                 if (premultiplied) {
                     out["rgb"] setTo out["rgb"] / out["a"]
