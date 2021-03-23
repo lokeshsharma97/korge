@@ -37,3 +37,5 @@ dependencies {
 	add("commonMainApi", "com.soywiz.korlibs.kds:kds:$kdsVersion")
     add("commonMainApi", "com.soywiz.korlibs.korte:korte:$korteVersion")
 }
+
+apply(from="publish.gradle.kts")
